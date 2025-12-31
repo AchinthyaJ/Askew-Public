@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Askew Editor Login</title>
+    <link rel="icon" href="/static/icon.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/askew_theme.css">
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div>
+            <div class="brand">
+                <div class="brand-icon"><img src="/static/icon.png" alt="Askew"></div>
+                Askew
+            </div>
+            
+            <a href="/" class="sidebar-btn">
+                <span>&larr; Back to Home</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+        <div style="flex:1; display:flex; align-items:center; justify-content:center; padding:20px;">
+            <div class="card" style="width:100%; max-width:400px;">
+                <h2 style="text-align:center; margin-bottom:24px;">Editor Access</h2>
+                
+                {% if error %}
+                <div style="background:rgba(239, 68, 68, 0.1); color:#ef4444; padding:10px; border-radius:6px; margin-bottom:16px; font-size:14px; border:1px solid rgba(239, 68, 68, 0.2);">
+                    {{ error }}
+                </div>
+                {% endif %}
+
+                <label style="display:block; margin-bottom:8px; font-size:13px; font-weight:500; color:var(--text-muted);">Bot ID</label>
+                <input type="text" id="bot_id" value="{{ bot_id if bot_id else '' }}" placeholder="Enter Bot ID" style="margin-bottom:16px;">
+                
+                <label style="display:block; margin-bottom:8px; font-size:13px; font-weight:500; color:var(--text-muted);">Password</label>
+                <input type="password" id="password" placeholder="Enter Bot Password" style="margin-bottom:24px;">
+                
+                <button onclick="login()" class="btn btn-primary" style="width:100%;">
+                    Unlock Editor
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function login() {
+            const botId = document.getElementById('bot_id').value;
+            const password = document.getElementById('password').value;
+            
+            if(!botId || !password) {
+                alert("Please enter both Bot ID and Password");
+                return;
+            }
+            
+            try {
+                const res = await fetch('/auth/editor', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ bot_id: botId, password: password })
+                });
+                const data = await res.json();
+                
+                if(data.success) {
+                    window.location.href = data.redirect;
+                } else {
+                    alert(data.error || "Login failed");
+                }
+            } catch(e) {
+                alert("Error connecting to server");
+            }
+        }
+    </script>
+</body>
+</html>

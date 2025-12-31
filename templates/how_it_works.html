@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Askew - How it Works</title>
+    <link rel="icon" href="/static/icon.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/askew_theme.css">
+    <style>
+        .pipeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0;
+            position: relative;
+        }
+
+        .node {
+            background: var(--bg-hover);
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            z-index: 2;
+            transition: transform 0.3s;
+            text-align: center;
+            min-width: 100px;
+            border: 1px solid var(--border-subtle);
+        }
+        
+        .node.active {
+            background: var(--accent-lilac);
+            color: #000;
+            box-shadow: 0 0 15px var(--accent-lilac-glow);
+            transform: scale(1.05);
+            border-color: var(--accent-lilac);
+        }
+
+        .arrow {
+            flex: 1;
+            height: 2px;
+            background: var(--border-subtle);
+            margin: 0 10px;
+            position: relative;
+        }
+        
+        .packet {
+            width: 10px; height: 10px;
+            background: var(--accent-lilac);
+            border-radius: 50%;
+            position: absolute;
+            top: -4px;
+            left: 0;
+            opacity: 0;
+        }
+
+        @keyframes travel1 { 0% { left: 0; opacity: 1; } 100% { left: 100%; opacity: 1; } }
+
+        .pipeline.animate .arrow-1 .packet { animation: travel1 1s linear forwards; }
+        .pipeline.animate .arrow-2 .packet { animation: travel1 1s linear 1.2s forwards; }
+        .pipeline.animate .arrow-3 .packet { animation: travel1 1s linear 2.4s forwards; }
+        .pipeline.animate .arrow-4 .packet { animation: travel1 1s linear 3.6s forwards; }
+
+        .code-block {
+            background: #111;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            color: #a5d6a7;
+            overflow-x: auto;
+            border-left: 4px solid var(--accent-lilac);
+            margin-top: 20px;
+        }
+        
+        .comment { color: var(--text-muted); font-style: italic; }
+
+        .vector-viz {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            margin: 20px 0;
+            height: 40px;
+            align-items: flex-end;
+        }
+        .bar {
+            width: 20px;
+            background: var(--accent-lilac);
+            opacity: 0.5;
+            transition: height 0.5s ease;
+        }
+        .bar:hover { opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div>
+            <div class="brand">
+                <div class="brand-icon"><img src="/static/icon.png" alt="Askew"></div>
+                Askew
+            </div>
+            
+            <a href="/" class="sidebar-btn">
+                <span>&larr; Back to Home</span>
+            </a>
+            
+            <a href="/builder" class="sidebar-btn primary">
+                <span>Create New Bot</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+        <div class="container-center">
+            <h1>The Engine Room</h1>
+            <p>Underneath Askew's friendly facade lies a powerful, yet simple, machine learning pipeline. But don't let the technical terms intimidate you – <strong>building your own bot is incredibly easy!</strong></p>
+
+            <!-- Step 1: Pipeline -->
+            <div class="card">
+                <h2>1. The Processing Pipeline</h2>
+                <p style="text-align:center; font-size:13px; margin-bottom:20px;">Watch the data flow from user input to bot response.</p>
+                
+                <div class="pipeline" id="main-pipeline">
+                    <div class="node" id="n1">User Input</div>
+                    <div class="arrow arrow-1"><div class="packet"></div></div>
+                    
+                    <div class="node" id="n2">Vectorization</div>
+                    <div class="arrow arrow-2"><div class="packet"></div></div>
+                    
+                    <div class="node" id="n3">Classification</div>
+                    <div class="arrow arrow-3"><div class="packet"></div></div>
+                    
+                    <div class="node" id="n4">Response</div>
+                    <div class="arrow arrow-4"><div class="packet"></div></div>
+                    
+                    <div class="node" id="n5">Reply</div>
+                </div>
+                
+                <div style="text-align:center;">
+                    <button onclick="runAnimation()" class="btn btn-primary">Run Simulation</button>
+                </div>
+            </div>
+
+            <!-- Step 2: TF-IDF -->
+            <div class="card">
+                <h2>2. TF-IDF Vectorizer</h2>
+                <p class="comment">"Computers can't read words. They only understand numbers."</p>
+                <p>We use <strong>TF-IDF</strong> (Term Frequency-Inverse Document Frequency) to convert your text into a mathematical vector. Rare words get higher scores because they carry more meaning.</p>
+                
+                <div class="vector-viz">
+                    <div class="bar" style="height: 20%"></div>
+                    <div class="bar" style="height: 80%"></div>
+                    <div class="bar" style="height: 10%"></div>
+                    <div class="bar" style="height: 40%"></div>
+                    <div class="bar" style="height: 90%"></div>
+                    <div class="bar" style="height: 30%"></div>
+                    <div class="bar" style="height: 60%"></div>
+                </div>
+
+                <div class="code-block">
+                    vectorizer = TfidfVectorizer() <br>
+                    X = vectorizer.fit_transform(patterns) <br>
+                    <span class="comment"># Input: "Hello there"</span><br>
+                    <span class="comment"># Output: [0.0, 0.72, 0.0, 0.45, ...]</span>
+                </div>
+            </div>
+
+            <!-- Step 3: Logistic Regression -->
+            <div class="card">
+                <h2>3. Logistic Regression</h2>
+                <p>Once the text is a vector, we feed it into a <strong>Logistic Regression</strong> classifier. It calculates the probability of the input belonging to a specific <strong>Tag</strong> (Intent).</p>
+                
+                <div class="code-block">
+                    clf = LogisticRegression(random_state=0, max_iter=1000)<br>
+                    clf.fit(X, tags)<br><br>
+                    tag = clf.predict(user_input_vec)[0]<br>
+                    <span class="comment"># Predicted Tag: "greeting"</span>
+                </div>
+            </div>
+
+            <!-- Step 4: Intents -->
+            <div class="card">
+                <h2>4. The Brain (intents.json)</h2>
+                <p>Finally, the bot looks up the predicted tag in the JSON file and picks a random response from the list.</p>
+                <div class="code-block" style="color:#d8b4fe;">
+                    {<br>
+                    &nbsp;&nbsp;"tag": "greeting",<br>
+                    &nbsp;&nbsp;"patterns": ["Hi", "Hello"],<br>
+                    &nbsp;&nbsp;"responses": ["Hello there!", "Hi, I am Askew."]<br>
+                    }
+                </div>
+            </div>
+
+            <p style="text-align:center; font-weight:500; margin-top:40px;">And that's it! This straightforward process is how Askew brings your custom bots to life.</p>
+            
+            <div style="text-align:center; margin-top:20px;">
+                <a href="/builder" class="btn btn-primary">Start Building Now</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function runAnimation() {
+            const pipeline = document.getElementById('main-pipeline');
+            const nodes = [
+                document.getElementById('n1'),
+                document.getElementById('n2'),
+                document.getElementById('n3'),
+                document.getElementById('n4'),
+                document.getElementById('n5')
+            ];
+            
+            // Reset
+            pipeline.classList.remove('animate');
+            nodes.forEach(n => n.classList.remove('active'));
+            
+            // Trigger reflow
+            void pipeline.offsetWidth;
+            
+            // Start
+            pipeline.classList.add('animate');
+            
+            // Light up nodes in sync with CSS animation timings
+            setTimeout(() => nodes[0].classList.add('active'), 0);
+            setTimeout(() => nodes[1].classList.add('active'), 1000);
+            setTimeout(() => nodes[2].classList.add('active'), 2200);
+            setTimeout(() => nodes[3].classList.add('active'), 3400);
+            setTimeout(() => nodes[4].classList.add('active'), 4600);
+            
+            setTimeout(() => {
+                nodes.forEach(n => n.classList.remove('active'));
+            }, 6000);
+        }
+        
+        // Auto-run on load once
+        setTimeout(runAnimation, 500);
+    </script>
+
+</body>
+</html>

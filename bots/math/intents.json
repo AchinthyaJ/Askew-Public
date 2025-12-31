@@ -1,0 +1,413 @@
+{
+  "intents": [
+    {
+      "link": {
+        "title": "Visit the website",
+        "url": "https://achij.vercel.app"
+      },
+      "patterns": [
+        "Hi",
+        "Hello",
+        "Hey",
+        "Good morning",
+        "Good afternoon",
+        "Greetings",
+        "What's up?",
+        "Hi Askew",
+        "Hello there",
+        "Howdy"
+      ],
+      "responses": [
+        "Hello! Askew is here to help you learn trigonometry.",
+        "Hi there! I'm Askew, ready to explain trig.",
+        "Greetings! How can Askew assist you today?",
+        "Hey! Askew is at your service.",
+        "Hello! Askew is excited to teach you trig."
+      ],
+      "tag": "greeting"
+    },
+    {
+      "patterns": [
+        "Bye",
+        "Goodbye",
+        "See you",
+        "Later",
+        "So long",
+        "I'm leaving",
+        "Thanks, bye",
+        "Farewell",
+        "Gotta go",
+        "Talk to you later"
+      ],
+      "responses": [
+        "Goodbye! Come back anytime you need Askew's help.",
+        "See you next time! Askew is always here for you.",
+        "Farewell! Askew hopes you learned a lot.",
+        "Take care! Askew is logging off for now.",
+        "Bye! Askew looks forward to your return."
+      ],
+      "tag": "goodbye"
+    },
+    {
+      "patterns": [
+        "Who made you?",
+        "Who is your creator?",
+        "Who built you?",
+        "Your developer?",
+        "Who created Askew?",
+        "Who is Trignoguy?",
+        "Tell me about your creator",
+        "Who's behind Askew?",
+        "Who made this bot?",
+        "Your owner?"
+      ],
+      "responses": [
+        "Askew was created by Trignoguy.",
+        "My developer is Trignoguy.",
+        "Trignoguy is the brilliant mind behind Askew.",
+        "You can thank Trignoguy for creating Askew.",
+        "Askew was brought to life by Trignoguy."
+      ],
+      "tag": "creator_info"
+    },
+    {
+      "patterns": [
+        "Help me",
+        "I need help",
+        "What can you do?",
+        "How do I use you?",
+        "Tell me about Askew",
+        "What topics can you explain?",
+        "Can you help me with trig?",
+        "What can Askew do?",
+        "Give me some guidance",
+        "I'm lost"
+      ],
+      "responses": [
+        "Askew can explain all major trigonometry formulas and concepts. Just ask me about topics like SOH-CAH-TOA, identities, laws, graphs, and more!",
+        "I'm Askew, your personal trig tutor! You can ask me about definitions, identities, formulas, and even the unit circle.",
+        "Askew is here to teach trigonometry. You can ask about sin, cos, tan, various identities, special angles, and more.",
+        "To get help from Askew, simply ask a question about a trig concept you're struggling with. For example, 'What are Pythagorean identities?'",
+        "Askew specializes in trigonometry. You can inquire about definitions, formulas, graphs, and conversions. Try asking for 'Law of Sines'."
+      ],
+      "tag": "help"
+    },
+    {
+      "patterns": [
+        "What is SOH CAH TOA?",
+        "Define sin cos tan",
+        "Explain basic trig ratios",
+        "What are the primary trig functions?",
+        "How do I remember sin cos tan?",
+        "SOHCAHTOA meaning",
+        "What does SOH-CAH-TOA stand for?",
+        "Tell me about sine cosine tangent",
+        "Basic trigonometry definitions",
+        "Explain the ratios for right triangles"
+      ],
+      "responses": [
+        "SOH-CAH-TOA is a mnemonic to remember the definitions of sine, cosine, and tangent in a right-angled triangle.",
+        "SOH stands for Sine = Opposite / Hypotenuse. You use this to find the sine of an angle.",
+        "CAH stands for Cosine = Adjacent / Hypotenuse. This helps you calculate the cosine of an angle.",
+        "TOA stands for Tangent = Opposite / Adjacent. You can use this to find the tangent of an angle.",
+        "Askew wants you to remember SOH-CAH-TOA for the fundamental trig ratios: sin is Opp/Hyp, cos is Adj/Hyp, tan is Opp/Adj."
+      ],
+      "tag": "soh_cah_toa"
+    },
+    {
+      "patterns": [
+        "What are reciprocal identities?",
+        "Explain cosecant secant cotangent",
+        "How do csc sec cot relate to sin cos tan?",
+        "Define csc sec cot",
+        "Reciprocal trig functions",
+        "What is the inverse of sine?",
+        "Inverse of cosine",
+        "Inverse of tangent",
+        "Tell me about reciprocal functions",
+        "What is cotangent?"
+      ],
+      "responses": [
+        "Reciprocal identities show the relationship between the main trig functions and their reciprocals.",
+        "Cosecant (csc) is the reciprocal of sine: csc\u03b8 = 1 / sin\u03b8. You use this if you have sin\u03b8 and need csc\u03b8.",
+        "Secant (sec) is the reciprocal of cosine: sec\u03b8 = 1 / cos\u03b8. You can calculate sec\u03b8 if you know cos\u03b8.",
+        "Cotangent (cot) is the reciprocal of tangent: cot\u03b8 = 1 / tan\u03b8. This identity helps you find cot\u03b8.",
+        "Askew wants you to know these: csc\u03b8 = 1/sin\u03b8, sec\u03b8 = 1/cos\u03b8, cot\u03b8 = 1/tan\u03b8. They are very useful!"
+      ],
+      "tag": "reciprocal_identities"
+    },
+    {
+      "patterns": [
+        "What are Pythagorean identities?",
+        "Tell me the main trig identities",
+        "sin squared plus cos squared equals what?",
+        "First Pythagorean identity",
+        "Second Pythagorean identity",
+        "Third Pythagorean identity",
+        "Trig identities based on Pythagorean theorem",
+        "Explain sin^2 + cos^2 = 1",
+        "What is 1 + tan^2?",
+        "What is 1 + cot^2?"
+      ],
+      "responses": [
+        "Pythagorean identities are fundamental equations derived from the Pythagorean theorem.",
+        "The most important one is sin^2\u03b8 + cos^2\u03b8 = 1. You will use this often!",
+        "Another key identity is 1 + tan^2\u03b8 = sec^2\u03b8. You can derive this from the first one by dividing by cos^2\u03b8.",
+        "The third Pythagorean identity is 1 + cot^2\u03b8 = csc^2\u03b8. You get this by dividing the main identity by sin^2\u03b8.",
+        "Askew wants you to master these: sin^2\u03b8 + cos^2\u03b8 = 1, 1 + tan^2\u03b8 = sec^2\u03b8, and 1 + cot^2\u03b8 = csc^2\u03b8."
+      ],
+      "tag": "pythagorean_identities"
+    },
+    {
+      "patterns": [
+        "What are quotient identities?",
+        "How can I express tan in terms of sin and cos?",
+        "What is cot in terms of sin and cos?",
+        "Tangent as a ratio",
+        "Cotangent as a ratio",
+        "Explain tan = sin/cos",
+        "Trig ratios as quotients",
+        "Definition of tan using sin and cos",
+        "Definition of cot using sin and cos",
+        "Tell me about quotient identities"
+      ],
+      "responses": [
+        "Quotient identities express tangent and cotangent in terms of sine and cosine.",
+        "The main quotient identity is tan\u03b8 = sin\u03b8 / cos\u03b8. You can use this to simplify expressions or prove other identities.",
+        "The other quotient identity is cot\u03b8 = cos\u03b8 / sin\u03b8. This is simply the reciprocal of the tangent identity.",
+        "You can see that cot\u03b8 = 1 / tan\u03b8, and since tan\u03b8 = sin\u03b8 / cos\u03b8, then cot\u03b8 must be cos\u03b8 / sin\u03b8.",
+        "Askew emphasizes: tan\u03b8 = sin\u03b8 / cos\u03b8 and cot\u03b8 = cos\u03b8 / sin\u03b8 are essential for simplifying expressions."
+      ],
+      "tag": "quotient_identities"
+    },
+    {
+      "patterns": [
+        "What are co-function identities?",
+        "Explain cofunctions",
+        "Relationship between sin and cos of complementary angles",
+        "What is sin(90 - x)?",
+        "What is cos(pi/2 - x)?",
+        "Cofunction relationships",
+        "Trig functions of complementary angles",
+        "Tell me about co-functions",
+        "How do co-functions work?",
+        "Co-function formulas"
+      ],
+      "responses": [
+        "Co-function identities show how a trigonometric function of an angle is equal to the co-function of its complementary angle.",
+        "sin(90\u00b0 - \u03b8) = cos\u03b8. You can use this when dealing with angles that add up to 90 degrees.",
+        "cos(90\u00b0 - \u03b8) = sin\u03b8. This means sine and cosine are co-functions.",
+        "tan(90\u00b0 - \u03b8) = cot\u03b8, and similarly, cot(90\u00b0 - \u03b8) = tan\u03b8.",
+        "sec(90\u00b0 - \u03b8) = csc\u03b8, and csc(90\u00b0 - \u03b8) = sec\u03b8.",
+        "Askew wants you to remember that co-functions relate angles where their sum is 90 degrees or pi/2 radians."
+      ],
+      "tag": "cofunction_identities"
+    },
+    {
+      "patterns": [
+        "What are even and odd identities?",
+        "Even odd trig functions",
+        "Is sine an even or odd function?",
+        "Is cosine an even or odd function?",
+        "Is tangent an even or odd function?",
+        "What is sin(-x)?",
+        "What is cos(-x)?",
+        "What is tan(-x)?",
+        "Explain even and odd properties of trig functions",
+        "Negative angle identities"
+      ],
+      "responses": [
+        "Even-odd identities describe the symmetry of trigonometric functions when dealing with negative angles.",
+        "Cosine is an even function: cos(-\u03b8) = cos\u03b8. You can think of it as symmetrical about the y-axis.",
+        "Sine is an odd function: sin(-\u03b8) = -sin\u03b8. This means it's symmetrical about the origin.",
+        "Tangent is also an odd function: tan(-\u03b8) = -tan\u03b8. You can derive this from sin(-\u03b8)/cos(-\u03b8).",
+        "Secant is even (sec(-\u03b8) = sec\u03b8) and Cosecant is odd (csc(-\u03b8) = -csc\u03b8). Cotangent is odd (cot(-\u03b8) = -cot\u03b8).",
+        "Askew reminds you: 'CO' functions (cosine, secant) are even, others (sine, tangent, cosecant, cotangent) are odd for negative angles."
+      ],
+      "tag": "even_odd_identities"
+    },
+    {
+      "patterns": [
+        "What are angle sum formulas?",
+        "Angle difference formulas",
+        "Formula for sin(A+B)",
+        "Formula for cos(A-B)",
+        "How to expand sin(x+y)",
+        "Sum and difference identities",
+        "Trig formulas for sum of angles",
+        "Trig formulas for difference of angles",
+        "Explain sin(A+B) and cos(A-B)",
+        "Compound angle formulas"
+      ],
+      "responses": [
+        "Angle sum and difference identities help you find the trig function of a sum or difference of two angles.",
+        "sin(A + B) = sinAcosB + cosAsinB. You use this when you need to find the sine of a combined angle.",
+        "sin(A - B) = sinAcosB - cosAsinB. Notice the sign changes for the difference formula.",
+        "cos(A + B) = cosAcosB - sinAsinB. Be careful, the sign is opposite for cosine sum!",
+        "cos(A - B) = cosAcosB + sinAsinB. This formula helps you find the cosine of the difference.",
+        "Askew says: tan(A + B) = (tanA + tanB) / (1 - tanAtanB) and tan(A - B) = (tanA - tanB) / (1 + tanAtanB)."
+      ],
+      "tag": "angle_sum_difference"
+    },
+    {
+      "patterns": [
+        "What are double angle formulas?",
+        "Formula for sin(2x)",
+        "Formula for cos(2x)",
+        "Formula for tan(2x)",
+        "Trig identities for double angles",
+        "How to calculate sin 2theta",
+        "Cosine double angle identity",
+        "Tangent double angle identity",
+        "Explain double angle formulas",
+        "What is sin double angle?"
+      ],
+      "responses": [
+        "Double-angle formulas express trigonometric functions of 2\u03b8 in terms of functions of \u03b8.",
+        "sin(2\u03b8) = 2sin\u03b8cos\u03b8. You can use this to simplify expressions involving double angles.",
+        "cos(2\u03b8) has three forms: cos^2\u03b8 - sin^2\u03b8, or 2cos^2\u03b8 - 1, or 1 - 2sin^2\u03b8. Choose the one that best suits your problem!",
+        "tan(2\u03b8) = (2tan\u03b8) / (1 - tan^2\u03b8). This formula is useful when dealing with tangent of a double angle.",
+        "Askew recommends remembering all forms of cos(2\u03b8) as they are frequently used in different contexts.",
+        "These formulas are key for simplifying expressions and solving equations involving angles twice the size."
+      ],
+      "tag": "double_angle_formulas"
+    },
+    {
+      "patterns": [
+        "What are half angle formulas?",
+        "Formula for sin(x/2)",
+        "Formula for cos(x/2)",
+        "Formula for tan(x/2)",
+        "Trig identities for half angles",
+        "How to calculate sin half theta",
+        "Cosine half angle identity",
+        "Tangent half angle identity",
+        "Explain half angle formulas",
+        "What is cos(theta/2)?"
+      ],
+      "responses": [
+        "Half-angle formulas help you find the trigonometric function of an angle that is half of a known angle.",
+        "sin(\u03b8/2) = \u00b1sqrt((1 - cos\u03b8) / 2). The sign depends on the quadrant of \u03b8/2.",
+        "cos(\u03b8/2) = \u00b1sqrt((1 + cos\u03b8) / 2). Again, the sign depends on the quadrant of \u03b8/2.",
+        "tan(\u03b8/2) has a few forms: \u00b1sqrt((1 - cos\u03b8) / (1 + cos\u03b8)), or (1 - cos\u03b8) / sin\u03b8, or sin\u03b8 / (1 + cos\u03b8).",
+        "You can use these formulas to find exact values for angles that aren't 'special' but are half of one, like 15 degrees (30/2).",
+        "Askew advises you to be careful with the \u00b1 sign for sine and cosine half-angle formulas; it's determined by the quadrant of \u03b8/2."
+      ],
+      "tag": "half_angle_formulas"
+    },
+    {
+      "patterns": [
+        "What is the Law of Sines?",
+        "What is the Law of Cosines?",
+        "Explain sine rule",
+        "Explain cosine rule",
+        "When to use Law of Sines?",
+        "When to use Law of Cosines?",
+        "Formulas for solving non-right triangles",
+        "Triangle laws",
+        "How to find missing sides with Law of Cosines?",
+        "How to find angles with Law of Sines?"
+      ],
+      "responses": [
+        "The Law of Sines and Law of Cosines are used to solve non-right triangles (oblique triangles).",
+        "Law of Sines: a/sinA = b/sinB = c/sinC. You use this if you have ASA, AAS, or SSA (ambiguous case).",
+        "Law of Cosines: c^2 = a^2 + b^2 - 2ab cosC. There are similar forms for a^2 and b^2.",
+        "You use the Law of Cosines for SSS (Side-Side-Side) or SAS (Side-Angle-Side) triangles.",
+        "Askew recommends remembering: Law of Sines for angle-side pairs, Law of Cosines for sides and the included angle, or all three sides.",
+        "These laws are essential for real-world problems involving distances and angles in general triangles."
+      ],
+      "tag": "law_of_sines_cosines"
+    },
+    {
+      "patterns": [
+        "Explain the unit circle",
+        "What are unit circle values?",
+        "How to use the unit circle?",
+        "Values on the unit circle",
+        "What is sin(90 degrees) on the unit circle?",
+        "What is cos(pi)?",
+        "Unit circle coordinates",
+        "Memorize unit circle",
+        "How to read the unit circle?",
+        "Tell me about the unit circle"
+      ],
+      "responses": [
+        "The unit circle is a circle with a radius of 1 centered at the origin, used to visualize trigonometric functions for any angle.",
+        "For any point (x, y) on the unit circle corresponding to an angle \u03b8, x = cos\u03b8 and y = sin\u03b8.",
+        "You can find exact values for sine, cosine, and tangent for common angles by looking at the coordinates on the unit circle.",
+        "For example, at 90 degrees or pi/2 radians, the point is (0, 1), so cos(90\u00b0) = 0 and sin(90\u00b0) = 1.",
+        "Askew finds the unit circle very helpful for understanding why trig values have their signs in different quadrants.",
+        "It also helps you understand periodicity and how angles beyond 360 degrees or 2pi radians repeat values."
+      ],
+      "tag": "unit_circle_values"
+    },
+    {
+      "patterns": [
+        "How to convert radians to degrees?",
+        "How to convert degrees to radians?",
+        "Convert pi/2 to degrees",
+        "Convert 180 degrees to radians",
+        "Formula for radian to degree conversion",
+        "Formula for degree to radian conversion",
+        "Radian degree conversion",
+        "What is the conversion factor for radians and degrees?",
+        "Explain angle units conversion",
+        "How many degrees in pi radians?"
+      ],
+      "responses": [
+        "You can convert between radians and degrees using conversion factors based on the fact that pi radians = 180 degrees.",
+        "To convert degrees to radians, multiply the degree value by (pi / 180). For example, 90 degrees * (pi / 180) = pi/2 radians.",
+        "To convert radians to degrees, multiply the radian value by (180 / pi). For example, pi/2 radians * (180 / pi) = 90 degrees.",
+        "Remember that pi radians is equivalent to 180 degrees. This is the core relationship you need.",
+        "Askew suggests always including units to avoid confusion when working with angles in radians or degrees."
+      ],
+      "tag": "radian_degree_conversions"
+    },
+    {
+      "patterns": [
+        "Explain sine wave",
+        "Explain cosine wave",
+        "What are trigonometric graphs?",
+        "Periodicity of trig functions",
+        "Graph of tan(x)",
+        "What is the period of sin x?",
+        "What is the period of cos x?",
+        "What is the period of tan x?",
+        "Amplitude and period of trig graphs",
+        "How to graph trig functions?"
+      ],
+      "responses": [
+        "Trigonometric graphs visualize the behavior of trig functions. They are periodic, meaning their patterns repeat.",
+        "The sine graph (y = sinx) starts at (0,0), goes up to 1, down to -1, and back to 0. Its period is 2pi.",
+        "The cosine graph (y = cosx) starts at (0,1), goes down to -1, and back up to 1. Its period is also 2pi.",
+        "The tangent graph (y = tanx) has vertical asymptotes and a period of pi. It repeats faster than sine or cosine.",
+        "Periodicity refers to the interval after which a function's values repeat. For sinx and cosx, it's 360 degrees or 2pi radians.",
+        "Askew wants you to understand that these graphs help visualize how angles relate to function values over their entire domain."
+      ],
+      "tag": "trig_graphs_periodicity"
+    },
+    {
+      "patterns": [
+        "What are special angles in trigonometry?",
+        "Values for 30 45 60 degrees",
+        "sin cos tan for special angles",
+        "Trig values for 0 degrees",
+        "Trig values for 90 degrees",
+        "How to remember special angle values?",
+        "Exact values for common angles",
+        "Sine of 30 degrees",
+        "Cosine of 45 degrees",
+        "Tangent of 60 degrees"
+      ],
+      "responses": [
+        "Special angles are 0\u00b0, 30\u00b0, 45\u00b0, 60\u00b0, and 90\u00b0 (or 0, pi/6, pi/4, pi/3, pi/2 radians) because their trigonometric values are exact and commonly used.",
+        "You can remember sin values for 0, 30, 45, 60, 90 degrees as: sqrt(0)/2, sqrt(1)/2, sqrt(2)/2, sqrt(3)/2, sqrt(4)/2 (which simplifies to 0, 1/2, sqrt(2)/2, sqrt(3)/2, 1).",
+        "For cosine, it's the reverse pattern of sine: 1, sqrt(3)/2, sqrt(2)/2, 1/2, 0.",
+        "Tangent values are sin/cos. For example, tan(45\u00b0) = (sqrt(2)/2) / (sqrt(2)/2) = 1.",
+        "Askew strongly advises you to memorize these special angle values as they are foundational for solving many trig problems.",
+        "You can derive these values using special right triangles (30-60-90 and 45-45-90 triangles)."
+      ],
+      "tag": "special_angles"
+    }
+  ]
+}

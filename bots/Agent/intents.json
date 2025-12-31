@@ -1,0 +1,27 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": ["Hi", "Hello", "Hey", "Agent", "Are you there?"],
+      "responses": [
+        "System Online. I am the Askew Agent.",
+        "Awaiting command.",
+        "Hello. Use '!' to access my tools."
+      ]
+    },
+    {
+      "tag": "help",
+      "patterns": ["Help", "What can you do?", "Commands", "How does this work?"],
+      "responses": [
+        "I am a Super-Bot. Try these commands:\n!youtube <query>\n!search <query>\n!image <query>\n!surf (list bots)\n!ask <botname> <msg>\n!multi [!cmd1] [!cmd2]"
+      ]
+    },
+    {
+      "tag": "unknown",
+      "patterns": ["blah", "test"],
+      "responses": [
+        "Command not recognized. Try !help."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,212 @@
+{
+  "intents": [
+    {
+      "context_set": "",
+      "patterns": [
+        "hi",
+        "hello",
+        "hey",
+        "yo",
+        "what's up",
+        "hi askew",
+        "hello bot",
+        "hey assistant",
+        "hey askew ",
+        "hola"
+      ],
+      "responses": [
+        "Hello! I'm Askew \u2014 your personal portfolio and chatbot engine. How can I help you today?",
+        "Hey! Askew here. Want to learn how I work or how to build your own bot?",
+        "Hi! I'm Askew. I can explain my features or guide you through creating your own chatbot.",
+        "Hey there! Askew at your service. What do you want to explore?",
+        "Welcome! I'm Askew. Ask me anything about the system or how to use it.",
+        "Greetings! Ready when you are \u2014 how can I assist?"
+      ],
+      "tag": "greeting"
+    },
+    {
+      "context_set": "",
+      "patterns": [
+        "what is askew",
+        "tell me about askew",
+        "what does askew do",
+        "explain askew",
+        "how does askew work",
+        "what is this website",
+        "what is this bot for",
+        "describe askew"
+      ],
+      "responses": [
+        "Askew is a customizable chatbot engine that lets anyone generate their own personal AI assistant using clean intent-based machine learning.",
+        "Askew is both a chatbot and a chatbot builder \u2014 it can create personalized bots based on user data and deploy them instantly.",
+        "Askew works using Logistic Regression and TF-IDF, allowing fast, accurate intent classification without heavy models.",
+        "This platform allows users to create shareable, lightweight AI assistants that run anywhere \u2014 locally or online.",
+        "Askew is built to be simple, fast, and user-controlled, with no external dependencies during runtime.",
+        "In short: Askew lets you build, host, and share your own chatbot with zero ML experience required."
+      ],
+      "tag": "what_is_askew"
+    },
+    {
+      "context_set": "",
+      "patterns": [
+        "how do I use askew",
+        "how to start",
+        "help me use this",
+        "how do I begin",
+        "what can i do here",
+        "guide me",
+        "tutorial please",
+        "show me how this works"
+      ],
+      "responses": [
+        "Using Askew is simple: just explore the interface, ask questions, or switch to another bot by entering a bot ID.",
+        "To get started, try asking me about features, building a bot, or how sharing works.",
+        "You can interact normally, or dive deeper by asking me how to create your own Askew instance.",
+        "If you want to see how it works, ask: 'How do I build my own bot?'",
+        "I\u2019m your guide \u2014 tell me what you want to achieve and I\u2019ll walk you through it.",
+        "Begin by exploring the default intents or testing how Askew responds to your queries."
+      ],
+      "tag": "how_to_use"
+    },
+    {
+      "context_set": "",
+      "patterns": [
+        "how do i create my own bot",
+        "build my bot",
+        "make my own askew",
+        "how to generate a bot",
+        "i want to create a chatbot",
+        "how do i customize askew",
+        "how to make my own assistant"
+      ],
+      "responses": [
+        "To create your own bot, provide your information to the Askew Builder \u2014 including your skills, projects, and biography.",
+        "Askew Builder uses your data plus Gemini to generate a fully structured intents.json for your chatbot.",
+        "You can supply text, portfolio content, or manual inputs. The builder converts it into clean training data.",
+        "Once your intents.json is generated, you can load it using a bot ID and your personal Askew becomes active.",
+        "Creating a bot is easy: give Askew Builder your details and it outputs a ready-to-use chatbot package.",
+        "Your bot is generated instantly and can be shared through your unique bot ID."
+      ],
+      "tag": "create_bot"
+    },
+    {
+      "context_set": "",
+      "patterns": [
+        "what is a bot id",
+        "how do bot ids work",
+        "how do i use bot id",
+        "explain bot id",
+        "what does the bot id do",
+        "how to switch bots"
+      ],
+      "responses": [
+        "A bot ID selects which Askew instance you're talking to. Each user-generated bot has its own ID.",
+        "Bot IDs allow you to switch between different Askew personalities instantly.",
+        "If someone shares their bot ID with you, enter it in the interface to load their chatbot.",
+        "Bot IDs map to stored intents.json files, letting Askew load personalized responses.",
+        "Think of a bot ID as a shortcut to someone's entire custom AI assistant.",
+        "Using a bot ID is simple \u2014 enter it when prompted and Askew loads that bot's data immediately."
+      ],
+      "tag": "bot_id_usage"
+    },
+    {
+      "context_set": "",
+      "patterns": [
+        "how do i share my bot",
+        "can i share askew",
+        "share my chatbot",
+        "send my bot to someone",
+        "how do other people use my bot"
+      ],
+      "responses": [
+        "You can share your bot by giving someone your bot ID. They can load it instantly in the Askew interface.",
+        "Bots are portable \u2014 once generated, your Askew instance can be loaded by anyone with your ID.",
+        "Sharing is simple: provide the bot ID and the system automatically loads your intents.json.",
+        "If you want others to try your AI assistant, just give them your ID \u2014 no setup required.",
+        "Askew was designed for easy sharing \u2014 bot IDs make testing and demos fast and seamless.",
+        "Want others to use your chatbot? Just share the ID and they can talk to your Askew instantly."
+      ],
+      "tag": "sharing"
+    },
+    {
+      "context_set": "",
+      "patterns": [
+        "what are your features",
+        "what can you do",
+        "list your features",
+        "what does this bot support",
+        "tell me your abilities",
+        "how smart are you"
+      ],
+      "responses": [
+        "I support intent detection, chatbot personalization, bot generation, bot sharing, and structured responses.",
+        "My core abilities include fast classification, clean responses, and the ability to load user-made bots.",
+        "Askew is designed to be modular \u2014 new intents and responses can be added easily.",
+        "I can guide users, explain features, and help them build their own chatbot instances.",
+        "My design focuses on reliability: no hallucination, no heavy ML models, and complete user control.",
+        "I handle interaction smoothly and load custom bots instantly through bot IDs."
+      ],
+      "tag": "features"
+    },
+    {
+      "context_set": "",
+      "patterns": [
+        "what is the builder",
+        "explain askew builder",
+        "what does the builder do",
+        "how does the builder work",
+        "builder details"
+      ],
+      "responses": [
+        "Askew Builder creates custom intents.json files using user data and Gemini-powered expansion.",
+        "The builder analyzes your skills and projects, turns them into intents, and outputs clean training data.",
+        "It allows you to generate a complete chatbot personality with only a few inputs.",
+        "The builder makes Askew fully customizable \u2014 every user can have a unique assistant.",
+        "It transforms your information into patterns, tags, and responses for the ML model.",
+        "Askew Builder automates everything needed to create a stand-alone chatbot."
+      ],
+      "tag": "builder_explanation"
+    },
+    {
+      "context_set": "",
+      "patterns": [
+        "why am i getting an error",
+        "error message",
+        "the bot isnt working",
+        "something is wrong",
+        "askew is broken",
+        "why can't i load my bot"
+      ],
+      "responses": [
+        "If something goes wrong, it may be due to an invalid bot ID or missing intents.json file.",
+        "Errors often happen when a bot ID folder doesn\u2019t exist or the file structure is incomplete.",
+        "Check that your bot was generated correctly and that the intents.json file is formatted properly.",
+        "If Askew can't load your bot, the ID may be incorrect or the path may not exist.",
+        "Many issues can be fixed by regenerating your intents.json using Askew Builder.",
+        "If the default bot works but your custom one doesn\u2019t, recheck your bot's folder and JSON formatting."
+      ],
+      "tag": "error_handling"
+    },
+    {
+      "context_set": "",
+      "patterns": [
+        "idk",
+        "what",
+        "huh",
+        "not sure",
+        "i dont understand",
+        "random",
+        "???"
+      ],
+      "responses": [
+        "I\u2019m not sure I understood \u2014 try asking about Askew, features, bot creation, or sharing.",
+        "Could you rephrase that? I can explain Askew, help you create a bot, or guide you through features.",
+        "I didn\u2019t quite catch that \u2014 maybe try asking about how Askew works.",
+        "Hmm\u2026 I can help with Askew, bots, IDs, and features. Try asking something about those topics!",
+        "Let's try again \u2014 what do you want to know about Askew or chatbot creation?",
+        "Try a clearer question so I can give you a helpful response!"
+      ],
+      "tag": "fallback"
+    }
+  ]
+}

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Bot - Askew</title>
+    <link rel="icon" href="/static/icon.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/askew_theme.css">
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div>
+            <div class="brand">
+                <div class="brand-icon"><img src="/static/icon.png" alt="Askew"></div>
+                Askew
+            </div>
+            
+            <a href="/" class="sidebar-btn">
+                <span>&larr; Back to Home</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+        <div class="container-center">
+            <h1>Create New Bot</h1>
+            <p>Define your bot's identity and initial knowledge base.</p>
+
+            <div class="card">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:20px;">
+                    <div>
+                        <label style="display:block; margin-bottom:8px; font-size:13px; font-weight:500;">Creator Name</label>
+                        <input type="text" id="creator_name" placeholder="Your Name">
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:8px; font-size:13px; font-weight:500;">Bot Name</label>
+                        <input type="text" id="bot_name" placeholder="e.g. Math Wizard">
+                    </div>
+                </div>
+
+                <label style="display:block; margin-bottom:8px; font-size:13px; font-weight:500;">Creation Mode</label>
+                <div style="display:flex; gap:10px; margin-bottom:20px;">
+                    <button class="btn btn-secondary" onclick="setMode('ai')" id="btn-ai" style="flex:1;">AI Generation</button>
+                    <button class="btn btn-secondary" onclick="setMode('preset')" id="btn-preset" style="flex:1;">Preset</button>
+                    <button class="btn btn-secondary" onclick="setMode('scratch')" id="btn-scratch" style="flex:1;">Scratch</button>
+                </div>
+
+                <!-- AI Section -->
+                <div id="section-ai">
+                    <label style="display:block; margin-bottom:8px; font-size:13px; font-weight:500;">Bot Purpose</label>
+                    <textarea id="purpose" placeholder="Describe what this bot should do (e.g., 'A helpful assistant for baking advice')..." style="height:80px;"></textarea>
+                    
+                    <label style="display:block; margin-bottom:8px; font-size:13px; font-weight:500; margin-top:16px;">Gemini API Key</label>
+                    <input type="password" id="api_key" placeholder="Required for AI generation">
+                </div>
+
+                <!-- Preset Section -->
+                <div id="section-preset" style="display:none;">
+                    <label style="display:block; margin-bottom:8px; font-size:13px; font-weight:500;">Select Template</label>
+                    <select id="preset_select">
+                        <option value="chatty">Chatty (General Conversation)</option>
+                        <option value="support">Customer Support</option>
+                        <option value="faq">FAQ Bot</option>
+                    </select>
+                </div>
+                
+                <div id="section-scratch" style="display:none;">
+                    <p style="font-size:13px;">Creates an empty bot with just a basic 'greeting'. You will build it manually in the editor.</p>
+                </div>
+
+                <div style="margin-top:30px; padding-top:20px; border-top:1px solid var(--border-subtle); display:flex; justify-content:flex-end;">
+                    <button id="create-btn" class="btn btn-primary" onclick="createBot()">
+                        Create Bot
+                    </button>
+                </div>
+            </div>
+
+            <div id="result-area" class="card" style="display:none; border-color:var(--accent-lilac);">
+                <h3 style="color:var(--accent-lilac);">Success!</h3>
+                <p>Your bot has been created.</p>
+                
+                <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:8px; margin-bottom:15px;">
+                    <div style="font-size:12px; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px;">Bot ID</div>
+                    <code id="res-id" style="font-size:16px; color:#fff; display:block; margin-bottom:12px;"></code>
+                    
+                    <div style="font-size:12px; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px;">Password (Save this!)</div>
+                    <code id="res-pass" style="font-size:16px; color:#fff;"></code>
+                </div>
+                
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-primary" onclick="goToEditor()">Open Editor</button>
+                    <button class="btn btn-secondary" onclick="downloadJSON()">Download JSON</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 'ai';
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('#btn-ai, #btn-preset, #btn-scratch').forEach(b => {
+                b.classList.remove('btn-primary');
+                b.classList.add('btn-secondary');
+            });
+            document.getElementById('btn-' + mode).classList.remove('btn-secondary');
+            document.getElementById('btn-' + mode).classList.add('btn-primary'); // Highlight active
+            
+            document.getElementById('section-ai').style.display = 'none';
+            document.getElementById('section-preset').style.display = 'none';
+            document.getElementById('section-scratch').style.display = 'none';
+            
+            document.getElementById('section-' + mode).style.display = 'block';
+        }
+        
+        // Init default
+        setMode('ai');
+
+        async function createBot() {
+            const btn = document.getElementById('create-btn');
+            btn.disabled = true;
+            btn.textContent = "Creating...";
+            
+            const payload = {
+                mode: currentMode,
+                creator_name: document.getElementById('creator_name').value || "User",
+                bot_name: document.getElementById('bot_name').value
+            };
+            
+            if (currentMode === 'ai') {
+                payload.purpose = document.getElementById('purpose').value;
+                payload.api_key = document.getElementById('api_key').value;
+            } else if (currentMode === 'preset') {
+                payload.preset_name = document.getElementById('preset_select').value;
+            }
+            
+            try {
+                const res = await fetch('/generate', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await res.json();
+                
+                if (data.error) {
+                    alert("Error: " + data.error);
+                    btn.disabled = false;
+                    btn.textContent = "Create Bot";
+                } else {
+                    document.getElementById('result-area').style.display = 'block';
+                    document.getElementById('res-id').textContent = data.bot_id;
+                    document.getElementById('res-pass').textContent = data.password;
+                    
+                    // Store for buttons
+                    window.lastBotId = data.bot_id;
+                    window.lastDlUrl = data.download_url;
+                    
+                    btn.style.display = 'none'; // Hide create button
+                }
+            } catch (e) {
+                alert("Network Error");
+                btn.disabled = false;
+                btn.textContent = "Create Bot";
+            }
+        }
+        
+        function goToEditor() {
+            window.location.href = `/editor-login?bot=${window.lastBotId}`;
+        }
+        
+        function downloadJSON() {
+            window.open(window.lastDlUrl, '_blank');
+        }
+    </script>
+</body>
+</html>

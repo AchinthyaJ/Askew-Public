@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ bot_name if bot_name else 'Askew' }}</title>
+    <link rel="icon" href="/static/icon.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/askew_theme.css">
+    <style>
+        /* View Switching - Forced to override any conflicts */
+        .view-section { display: none !important; height: 100%; flex-direction: column; }
+        .view-section.active { display: flex !important; }
+
+        /* Discover View */
+        .discover-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            padding: 20px;
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .hero-greeting {
+            font-family: 'Inter', sans-serif;
+            font-size: 48px;
+            font-weight: 500;
+            color: var(--text-main);
+            margin-bottom: 24px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        .hero-greeting span { color: var(--accent-lilac); }
+        
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        .continue-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--accent-lilac);
+            color: var(--accent-lilac);
+            padding: 10px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin: 10px auto 20px auto;
+            transition: all 0.2s;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .continue-btn:hover { background: rgba(216, 180, 254, 0.1); transform: translateY(-1px); }
+
+        /* Hero / Initial View Mode for Chat */
+        #chat-view.initial-view {
+            justify-content: center;
+        }
+        #chat-view.initial-view .chat-container {
+            flex: 0 0 auto;
+            width: 100%;
+            padding: 0 20px;
+            margin-bottom: 20px;
+        }
+        #chat-view.initial-view .chat-stream {
+            display: none;
+        }
+        #chat-view.initial-view .input-wrapper {
+            flex: 0 0 auto;
+            width: 100%;
+            max-width: 768px;
+            margin: 0 auto;
+        }
+
+        /* Hero / Initial View Mode for Discover */
+        #discover-view.initial-discover {
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center; 
+            height: 100%; 
+            overflow-y: auto;
+            padding-top: 60px;
+        }
+        #discover-view.initial-discover .container-center {
+            flex: 0 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* Ensure Greeting is Visible */
+        #discover-view.initial-discover #discover-greeting {
+            display: block !important;
+            opacity: 1;
+            animation: none; 
+            margin-bottom: 40px;
+        }
+
+        .bot-card {
+            background: var(--bg-element);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-main);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.5s ease-out backwards;
+        }
+        .bot-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            border-color: var(--accent-lilac);
+            box-shadow: 0 8px 30px rgba(176, 146, 242, 0.2);
+        }
+
+        .bot-card:nth-child(1) { animation-delay: 0.1s; }
+        .bot-card:nth-child(2) { animation-delay: 0.2s; }
+        .bot-card:nth-child(3) { animation-delay: 0.3s; }
+        .bot-card:nth-child(4) { animation-delay: 0.4s; }
+        .bot-card:nth-child(5) { animation-delay: 0.5s; }
+        .bot-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .bot-card-icon {
+            width: 40px; height: 40px;
+            background: var(--bg-hover);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-main);
+        }
+        
+        .bot-card-name { font-weight: 600; font-size: 15px; }
+        .bot-card-desc { font-size: 12px; color: var(--text-muted); }
+        
+        .add-bot-card {
+            border-style: dashed;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+        }
+        .add-bot-card:hover { background: rgba(255,255,255,0.03); border-color: var(--text-muted); }
+
+        /* Chat Specifics */
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .chat-stream {
+            width: 100%;
+            max-width: 768px;
+            padding-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        .msg {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            line-height: 1.6;
+            font-size: 15px;
+            animation: messageSlideIn 0.4s ease-out;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .msg.user {
+            animation-name: messageSlideInRight;
+        }
+
+        @keyframes messageSlideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .msg.bot {
+            animation-name: messageSlideInLeft;
+        }
+
+        @keyframes messageSlideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .msg.user { flex-direction: row-reverse; }
+
+        .avatar {
+            width: 32px; height: 32px;
+            border-radius: 6px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .avatar.bot { background: transparent; }
+        .avatar.bot .icon-bot {
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--accent-lilac);
+            border-radius: 6px;
+            color: black;
+        }
+        .avatar.bot .icon-bot img { width: 100%; height: 100%; object-fit: contain; border-radius: 6px; }
+        .avatar.bot .icon-bot svg { width: 20px; height: 20px; }
+        
+        .avatar.user { background: var(--bg-element); color: var(--text-main); border-radius: 50%; }
+
+        .bubble { 
+            flex: 1; 
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 12px;
+            position: relative;
+            word-wrap: break-word;
+        }
+        
+        .msg.user .bubble {
+            background: #62428A; /* Medium-dark muted purple for user */
+            color: #FFFFFF;
+            border-top-right-radius: 2px;
+        }
+        
+        .msg.bot .bubble { 
+            background: #2D2D2D; /* Dark gray for bot */
+            color: #FFFFFF;
+            border-top-left-radius: 2px;
+        }
+        .msg.bot.agent-msg .bubble {
+            background: rgba(20, 20, 20, 0.95);
+            border: 1px solid rgba(216, 180, 254, 0.3);
+            box-shadow: 0 0 15px rgba(216, 180, 254, 0.05);
+        }
+        .msg.bot .bubble a { color: var(--accent-lilac); } /* Uses new accent lilac */
+        
+        .msg.bot .bubble img, .msg.bot .bubble iframe { 
+            max-width: 100%; border-radius: 8px; margin-top: 10px; 
+        }
+        
+        .msg-meta { 
+            font-size: 11px; 
+            margin-bottom: 4px; 
+            font-weight: 600;
+            opacity: 0.7;
+        }
+
+        .input-wrapper {
+            width: 100%;
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+            background: var(--bg-body); /* cover content behind */
+        }
+
+        .input-box {
+            width: 100%;
+            max-width: 768px;
+            background: var(--bg-element);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        
+        .input-box:focus-within { 
+            border-color: var(--accent-lilac); 
+            box-shadow: 0 0 0 3px rgba(176, 146, 242, 0.15);
+            transform: translateY(-2px);
+        }
+
+        textarea {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 16px;
+            resize: none;
+            min-height: 24px;
+            max-height: 200px;
+            padding: 4px 8px;
+            margin-bottom: 12px;
+            width: 100%;
+        }
+        textarea:focus { outline: none; border: none; } 
+        textarea::placeholder { color: #52525b; }
+
+        .input-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 4px;
+        }
+
+        .controls-left { display: flex; gap: 8px; }
+
+        .icon-btn {
+            color: var(--text-muted);
+            background: rgba(255,255,255,0.03); 
+            border: 1px solid transparent; 
+            cursor: pointer;
+            padding: 8px; 
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .icon-btn:hover { background: var(--bg-hover); color: var(--text-main); }
+
+        .send-btn {
+            background: var(--text-main); 
+            color: black;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; align-items: center; gap: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+        .send-btn:hover { 
+            background: #fff; 
+            box-shadow: 0 0 20px rgba(255,255,255,0.3);
+            transform: translateY(-2px) scale(1.05);
+        }
+        .send-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
+        }
+        .modal-overlay.active { display: flex; }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div>
+            <div class="brand">
+                <div class="brand-icon" id="header-icon"></div>
+                <span id="bot-name-display">Askew</span>
+            </div>
+            
+            <a href="/builder" class="sidebar-btn primary" id="btn-create">
+                <span>Create New Bot</span>
+            </a>
+            
+            <a href="javascript:showDiscover()" class="sidebar-btn" id="btn-discover">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                <span>Discover</span>
+            </a>
+
+             <a href="javascript:openAgent()" class="sidebar-btn" id="btn-agent">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M21.18 8.02c-.99-2.3-2.73-4.04-5.03-5.03"></path><path d="M2.82 15.98c.99 2.3 2.73 4.04 5.03 5.03"></path></svg>
+                <span>Agent</span>
+            </a>
+            
+            <a href="/editor-login" class="sidebar-btn" id="btn-editor">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                <span>Editor</span>
+            </a>
+
+            <div class="nav-section">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin: 20px 12px 12px 12px;">
+                    <div class="nav-label" style="margin:0;">Recent Chatbots</div>
+                    <button class="icon-btn" style="padding:4px; height:auto; width:24px; border:none;" onclick="clearRecents()" title="Clear Recents">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                </div>
+                <div id="sidebarRecentsList">
+                    <!-- JS populated -->
+                    <div style="padding:0 12px; color:var(--text-muted); font-size:12px;">No recent bots.</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="user-section">
+            <div class="user-profile" onclick="changeName()" style="cursor: pointer;" title="Click to change name">
+                <div class="user-avatar">U</div>
+                <div style="font-size:14px; font-weight:500;">
+                    <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">Chatting as</div>
+                    <span id="user-name-display">User</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main: Discover View -->
+    <div class="main view-section" id="discover-view">
+        <div class="container-center">
+            <div id="discover-greeting" class="hero-greeting"></div>
+            <h1 style="text-align:center; font-weight:300; margin-bottom:10px;">Discover <span style="color:var(--accent-lilac);">Chatbots</span></h1>
+            <p style="text-align:center; margin-bottom:40px;">Explore public bots or add your own.</p>
+            
+            <div class="discover-grid" id="discover-grid">
+                <!-- JS populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Main: Chat View -->
+    <div class="main view-section" id="chat-view">
+        <div class="chat-container">
+            <div id="chat-greeting" class="hero-greeting" style="margin-top: 40px; display:none;"></div>
+            <button id="continue-btn" class="continue-btn" style="display:none;" onclick="restoreSession()">Continue previous session</button>
+            <div class="chat-stream" id="chat-stream">
+                <!-- Messages will be injected here -->
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-wrapper">
+            <div class="input-box">
+                <textarea placeholder="Message..."></textarea>
+                <div class="input-footer">
+                    <div class="controls-left">
+                        <button class="icon-btn" title="Voice Mode" onclick="toggleVoiceMode()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                <line x1="12" y1="19" x2="12" y2="23"></line>
+                                <line x1="8" y1="23" x2="16" y2="23"></line>
+                            </svg>
+                        </button>
+                        <button class="icon-btn" title="Share Bot" onclick="copyShareLink()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                                <polyline points="16 6 12 2 8 6"></polyline>
+                                <line x1="12" y1="2" x2="12" y2="15"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <button class="send-btn">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voice Mode Overlay -->
+    <div class="voice-overlay" id="voice-overlay">
+        <div class="voice-header">
+            <button class="close-voice-btn" onclick="toggleVoiceMode()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        
+        <div class="voice-content" id="voice-content-area">
+            <div class="voice-orb">
+                <div class="voice-orb-core"></div>
+                <div class="voice-orb-ring ring-1"></div>
+                <div class="voice-orb-ring ring-2"></div>
+                <div class="voice-orb-ring ring-3"></div>
+                <div class="voice-orb-ring ring-4"></div>
+            </div>
+            <div class="voice-status">Listening</div>
+        </div>
+        <div id="voice-rich-content" class="voice-content" style="flex: 0 0 auto; padding-top: 0; padding-bottom: 40px; display: none;">
+            <!-- Images/Links go here -->
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal-overlay" id="profile-modal">
+        <div class="card" style="width: 350px; max-width: 90%;">
+            <h3>Your Profile</h3>
+            <label style="display:block; margin-bottom:8px; font-size:13px; font-weight:500;">Display Name</label>
+            <input type="text" id="profile-name-input" placeholder="Your Name" style="margin-bottom:20px;">
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn btn-secondary" onclick="closeProfileModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveProfile()">Save Name</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Bot Modal -->
+    <div class="modal-overlay" id="add-bot-modal">
+        <div class="card" style="width: 350px; max-width: 90%;">
+            <h3>Add Bot</h3>
+            <label style="display:block; margin-bottom:8px; font-size:13px; font-weight:500;">Bot ID</label>
+            <input type="text" id="add-bot-id-input" placeholder="e.g. math-wizard-123" style="margin-bottom:20px;">
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn btn-secondary" onclick="closeAddBotModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="addPrivateBot()">Add Bot</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Debug Menu -->
+    <div id="debug-menu" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(0,0,0,0.9); color:#0f0; padding:20px; border-radius:10px; z-index:10000; font-family:monospace; min-width:300px; border: 1px solid #0f0;">
+        <h3 style="margin-top:0; border-bottom:1px solid #0f0; padding-bottom:10px;">ASK_DEBUG_MODE</h3>
+        <div id="debug-content">
+            <p><strong>Bot ID:</strong> <span id="dbg-bot-id">Loading...</span></p>
+            <p><strong>Model Source:</strong> <span id="dbg-source">Loading...</span></p>
+            <p><strong>Model Status:</strong> <span id="dbg-status">Loading...</span></p>
+            <p><strong>Last Response:</strong> <span id="dbg-last-resp">None</span></p>
+        </div>
+        <button onclick="document.getElementById('debug-menu').style.display='none'" style="background:#0f0; color:#000; border:none; padding:5px 10px; cursor:pointer; margin-top:10px; font-weight:bold;">CLOSE</button>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"><span id="toast-msg">Notification</span></div>
+
+    <script>
+        let currentBotId = null;
+        let botDisplayName = {{ bot_name | tojson | safe }} || "Askew";
+        let currentAvatar = {{ bot_avatar | tojson | safe }};
+        let ALL_BOTS = {{ bots | tojson | safe }};
+        
+        // Debug Logic
+        let logoClicks = 0;
+        document.querySelector('.brand').addEventListener('click', (e) => {
+            // e.preventDefault(); // Prevent home link if needed, or just let it be
+            logoClicks++;
+            if (logoClicks >= 5) {
+                document.getElementById('debug-menu').style.display = 'block';
+                fetchDebugInfo();
+                logoClicks = 0;
+            }
+        });
+
+        async function fetchDebugInfo() {
+            if (!currentBotId) return;
+            try {
+                // We'll assume a new endpoint /debug/status exists or we mock it for now
+                // Since user asked to "add a debug menu", we need to provide data. 
+                // Currently app.py doesn't have /debug/status, so we'll likely need to add that next. 
+                // For now, let's try to fetch it if it exists, or show placeholders.
+                const res = await fetch(`/debug/status?bot_id=${currentBotId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('dbg-bot-id').innerText = data.bot_id;
+                    document.getElementById('dbg-source').innerText = data.source;
+                    document.getElementById('dbg-status').innerText = data.model_status;
+                } else {
+                     document.getElementById('dbg-bot-id').innerText = currentBotId;
+                     document.getElementById('dbg-source').innerText = "Unknown (Endpoint missing)";
+                }
+            } catch (e) {
+                console.error("Debug fetch failed", e);
+            }
+        }
+
+        // Voice Vars
+        let isHandsFreeMode = false;
+        let isVoiceMode = false;
+        let isListening = false;
+        let recognition = null;
+        const synth = window.speechSynthesis;
+
+        const AVATARS = {
+            'default': '<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line></svg>',
+            'alien': '<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 17a2.99 2.99 0 0 1 2.99-2.99C17.5 14.01 20 17 20 17c0 2.48-1.02 4.5-3.05 4.5h-9.9C5.02 21.5 4 19.48 4 17c0 0 2.5-2.99 6.01-2.99A2.99 2.99 0 0 1 11 17z"></path><path d="M9 13a4.5 4.5 0 0 0 6 0"></path><line x1="9" y1="10" x2="9.01" y2="10"></line><line x1="15" y1="10" x2="15.01" y2="10"></line></svg>',
+            'ghost': '<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 22v-3h6v3a3 3 0 0 0 3-3V9a9 9 0 0 0-18 0v10a3 3 0 0 0 3 3z"></path><path d="M9 9h.01"></path><path d="M15 9h.01"></path></svg>',
+            'smiley': '<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="10"></line></svg>',
+            'cat': '<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5c2.97 0 5.43 2.1 5.91 5H18a4 4 0 0 1 4 4c0 2.21-1.79 4-4 4H6a4 4 0 0 1-4-4c0-2.21 1.79-4 4-4h.09C6.57 7.1 9.03 5 12 5z"></path><path d="M9 13v.01"></path><path d="M15 13v.01"></path></svg>',
+            'dog': '<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.466 1.376-1.234 1.411-1.426.06-1.002.653-1.192 1.08-1.402a.916.916 0 0 1 1.353 0c.427.21 1.02.4 1.08 1.402.035.192.15.96 1.411 1.426 1.931.722 3.576-.297 3.656-1 .113-.994-1.177-6.53-4-7-1.923-.321-3.5.782-3.5 2.172v2.172"></path><path d="M14 14c0 3 1 5 3 5s3-2 3-5"></path><path d="M4 14c0 3 1 5 3 5s3-2 3-5"></path></svg>'
+        };
+
+        // --- Init Speech API ---
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = function() {
+                isListening = true;
+                isVoiceMode = false;
+                document.querySelector('.input-box textarea').placeholder = "Listening...";
+                if (isHandsFreeMode) updateVoiceUI('listening');
+            };
+
+            recognition.onend = function() {
+                isListening = false;
+                const input = document.querySelector('.input-box textarea');
+                if(input) input.placeholder = "Message...";
+                const hasText = input && input.value.trim().length > 0;
+
+                if (isVoiceMode && hasText) {
+                    sendMessage();
+                } else if (isHandsFreeMode) {
+                    setTimeout(() => {
+                        if (isHandsFreeMode && !isListening) try { recognition.start(); } catch(e) {}
+                    }, 500);
+                }
+            };
+
+            recognition.onresult = function(event) {
+                let fullTranscript = '';
+                if (event.results && event.results.length > 0) {
+                    fullTranscript = event.results[0][0].transcript;
+                }
+                if (fullTranscript.trim()) {
+                    const input = document.querySelector('.input-box textarea');
+                    if(input) input.value = fullTranscript;
+                    isVoiceMode = true;
+                }
+            };
+        }
+
+        window.onload = function() {
+            renderRecentsSidebar();
+            
+            const storedName = localStorage.getItem('askew_username') || "User";
+            document.getElementById('user-name-display').textContent = storedName;
+            document.querySelector('.user-avatar').textContent = storedName.charAt(0).toUpperCase();
+
+            // Greet in Discover View by default
+            greet('discover-greeting');
+            // Ensure centered view for discover
+            document.getElementById('discover-view').classList.add('initial-discover');
+            
+            renderDiscoverGrid();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const botParam = urlParams.get('bot');
+            
+            if (botParam) {
+                // Check if it's the Agent
+                if(botParam === 'Agent' || botParam === 'agent') {
+                    openAgent(false);
+                } else {
+                    currentBotId = botParam; 
+                    updateChatUI(botDisplayName, currentAvatar);
+                    showChat();
+                    
+                    // Add to Recents
+                    addToRecents({id: currentBotId, name: botDisplayName, avatar: currentAvatar});
+                    
+                    // Trigger greeting and check history
+                    greet('chat-greeting');
+                    document.getElementById('chat-greeting').style.display = 'block';
+                    document.getElementById('chat-view').classList.add('initial-view');
+                    
+                    // Check if history exists
+                    const histKey = getHistoryKey(currentBotId);
+                    const hist = localStorage.getItem(histKey);
+                    if(hist && JSON.parse(hist).length > 0) {
+                        document.getElementById('continue-btn').style.display = 'flex';
+                        document.getElementById('chat-stream').innerHTML = ''; // Clear for now
+                    } else {
+                        document.getElementById('continue-btn').style.display = 'none';
+                        document.getElementById('chat-stream').innerHTML = ''; // Clear stream
+                    }
+                }
+            } else {
+                showDiscover();
+            }
+        };
+        
+        function greet(elementId) {
+            const el = document.getElementById(elementId);
+            if(!el) return;
+            
+            const hour = new Date().getHours();
+            let greeting = "Good Morning";
+            if(hour >= 12) greeting = "Good Afternoon";
+            if(hour >= 18) greeting = "Good Evening";
+            
+            const name = localStorage.getItem('askew_username') || "User";
+            el.innerHTML = `${greeting}, <span>${name}</span>`;
+        }
+
+        // --- Views ---
+        function showDiscover() {
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.getElementById('discover-view').classList.add('active');
+            
+            document.querySelectorAll('.sidebar-btn').forEach(el => el.classList.remove('primary'));
+            document.getElementById('btn-discover').classList.add('primary');
+            
+            // Reset header
+            document.getElementById('bot-name-display').textContent = "Askew";
+            updateBrandIcon(null);
+            
+            // Re-apply centered Greeting state
+            document.getElementById('discover-view').classList.add('initial-discover');
+            greet('discover-greeting');
+            
+            history.pushState(null, '', '/');
+        }
+        
+        function showChat() {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('chat-view').classList.add('active');
+            document.querySelectorAll('.sidebar-btn').forEach(el => el.classList.remove('primary'));
+        }
+        
+        function openAgent(pushState=true) {
+            currentBotId = 'Agent';
+            botDisplayName = "Askew Agent";
+            currentAvatar = 'default';
+            
+            updateChatUI("Askew Agent", "default");
+            showChat();
+            
+            document.querySelectorAll('.sidebar-btn').forEach(el => el.classList.remove('primary'));
+            document.getElementById('btn-agent').classList.add('primary');
+            
+            if(pushState) {
+                const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?bot=Agent';
+                window.history.pushState({path:newUrl}, '', newUrl);
+            }
+            
+            // Agent gets standard greeting treatment too
+            greet('chat-greeting');
+            document.getElementById('chat-greeting').style.display = 'block';
+            document.getElementById('chat-view').classList.add('initial-view');
+            
+            // Check history for Agent too
+            const histKey = getHistoryKey('Agent');
+            const hist = localStorage.getItem(histKey);
+            if(hist && JSON.parse(hist).length > 0) {
+                document.getElementById('continue-btn').style.display = 'flex';
+                document.getElementById('chat-stream').innerHTML = ''; 
+            } else {
+                document.getElementById('continue-btn').style.display = 'none';
+                document.getElementById('chat-stream').innerHTML = ''; 
+            }
+        }
+        
+        // --- Recents Logic ---
+        function getRecents() {
+             try { return JSON.parse(localStorage.getItem('askew_recents')) || []; } 
+             catch(e) { return []; }
+        }
+        
+        function addToRecents(bot) {
+            if(bot.id === 'Agent') return;
+            let recents = getRecents();
+            recents = recents.filter(b => b.id !== bot.id);
+            recents.unshift({ id: bot.id, name: bot.name, avatar: bot.avatar });
+            if(recents.length > 10) recents.pop();
+            localStorage.setItem('askew_recents', JSON.stringify(recents));
+            renderRecentsSidebar();
+        }
+        
+        function clearRecents() {
+            localStorage.removeItem('askew_recents');
+            renderRecentsSidebar();
+        }
+
+        function renderRecentsSidebar() {
+            const container = document.getElementById('sidebarRecentsList');
+            container.innerHTML = '';
+            
+            let recents = getRecents();
+            recents = recents.filter(b => b.id !== 'Agent');
+
+            if (recents.length === 0) {
+                container.innerHTML = '<div style="padding:0 12px; color:var(--text-muted); font-size:12px;">No recent bots.</div>';
+                return;
+            }
+
+            recents.forEach(bot => {
+                const link = document.createElement('a');
+                link.className = 'nav-item';
+                if (bot.id === currentBotId) link.classList.add('active');
+                
+                link.style.display = 'flex';
+                link.style.alignItems = 'center';
+                link.style.gap = '8px';
+                
+                link.onclick = () => connectFromSidebar(bot.id, bot.name, bot.avatar);
+                
+                const iconDiv = document.createElement('div');
+                iconDiv.style.width = '16px';
+                iconDiv.style.height = '16px';
+                iconDiv.innerHTML = AVATARS[bot.avatar] || AVATARS['default'];
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = bot.name;
+                
+                link.appendChild(iconDiv);
+                link.appendChild(nameSpan);
+                container.appendChild(link);
+            });
+        }
+        
+        // --- Discover Logic ---
+        function renderDiscoverGrid() {
+            const grid = document.getElementById('discover-grid');
+            grid.innerHTML = '';
+            
+            const addCard = document.createElement('div');
+            addCard.className = 'bot-card add-bot-card';
+            addCard.onclick = openAddBotModal;
+            addCard.innerHTML = `
+                <div style="font-size:24px; color:var(--text-muted);">+</div>
+                <div style="font-size:14px; color:var(--text-muted); font-weight:500;">Add Private Bot</div>
+            `;
+            grid.appendChild(addCard);
+            
+            ALL_BOTS.forEach(bot => {
+                const card = document.createElement('div');
+                card.className = 'bot-card';
+                card.onclick = () => connectFromSidebar(bot.id, bot.name, bot.avatar);
+                
+                card.innerHTML = `
+                    <div class="bot-card-icon">
+                        ${AVATARS[bot.avatar] || AVATARS['default']}
+                    </div>
+                    <div>
+                        <div class="bot-card-name">${bot.name}</div>
+                        <div class="bot-card-desc">Public Bot</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+        
+        // --- Chat History Logic ---
+        function getHistoryKey(botId) { return `chat_history_${botId}`; }
+        
+        function saveChatHistory(botId, msgObj) {
+            let hist = [];
+            try { hist = JSON.parse(localStorage.getItem(getHistoryKey(botId))) || []; } catch(e){}
+            hist.push(msgObj);
+            if(hist.length > 50) hist = hist.slice(-50);
+            localStorage.setItem(getHistoryKey(botId), JSON.stringify(hist));
+        }
+        
+        function loadChatHistory(botId) {
+            const stream = document.getElementById('chat-stream');
+            stream.innerHTML = '';
+            
+            let hist = [];
+            try { hist = JSON.parse(localStorage.getItem(getHistoryKey(botId))) || []; } catch(e){}
+            
+            if(hist.length === 0) {
+                if (botId === 'Agent') {
+                     appendMessage("Hello! I am the <b>Askew Agent</b>.<br>I can help you browse, search, and manage bots.<br>Try <code>!help</code> to see what I can do.", 'bot', null, false);
+                } else {
+                     appendMessage("Hello! I am " + botDisplayName, 'bot', null, false); 
+                }
+            } else {
+                hist.forEach(msg => {
+                    renderMessageHTML(msg.text, msg.sender, msg.link);
+                });
+                stream.scrollTop = stream.scrollHeight;
+            }
+        }
+        
+        function restoreSession() {
+            document.getElementById('continue-btn').style.display = 'none';
+            document.getElementById('chat-view').classList.remove('initial-view');
+            document.getElementById('chat-greeting').style.display = 'none';
+            if(currentBotId) loadChatHistory(currentBotId);
+        }
+
+        function updateBrandIcon(avatarKey) {
+            const container = document.getElementById('header-icon');
+            if (!avatarKey) {
+                container.className = "brand-icon transparent"; 
+                container.innerHTML = '<img src="/static/icon.png" alt="Askew">';
+            } else {
+                container.className = "brand-icon";
+                container.innerHTML = AVATARS[avatarKey] || AVATARS['default'];
+            }
+        }
+
+        function connectFromSidebar(id, name, avatar) {
+            currentBotId = id;
+            botDisplayName = name;
+            currentAvatar = avatar;
+            
+            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?bot=' + id;
+            window.history.pushState({path:newUrl}, '', newUrl);
+            
+            updateChatUI(name, avatar);
+            showChat();
+            addToRecents({id, name, avatar});
+            
+            // Remove Discover centered view class if we came from there
+            document.getElementById('discover-view').classList.remove('initial-discover');
+            
+            // Setup Chat centered view
+            greet('chat-greeting');
+            document.getElementById('chat-greeting').style.display = 'block';
+            document.getElementById('chat-view').classList.add('initial-view');
+            
+            const histKey = getHistoryKey(id);
+            const hist = localStorage.getItem(histKey);
+            if(hist && JSON.parse(hist).length > 0) {
+                document.getElementById('continue-btn').style.display = 'flex';
+                document.getElementById('chat-stream').innerHTML = ''; 
+            } else {
+                document.getElementById('continue-btn').style.display = 'none';
+                document.getElementById('chat-stream').innerHTML = ''; 
+            }
+            
+            document.querySelector('.input-box textarea').placeholder = `Message ${name}...`;
+        }
+        
+        function updateChatUI(name, avatar) {
+            document.getElementById('bot-name-display').textContent = name;
+            updateBrandIcon(avatar);
+        }
+
+        // Profile Logic
+        function openProfileModal() {
+            const current = localStorage.getItem('askew_username') || "User";
+            document.getElementById('profile-name-input').value = current;
+            document.getElementById('profile-modal').classList.add('active');
+        }
+        
+        function closeProfileModal() {
+            document.getElementById('profile-modal').classList.remove('active');
+        }
+        
+        function changeName() {
+            openProfileModal(); 
+        }
+        
+        function saveProfile() {
+            const newName = document.getElementById('profile-name-input').value;
+            if(newName && newName.trim()) {
+                localStorage.setItem('askew_username', newName.trim());
+                document.getElementById('user-name-display').textContent = newName.trim();
+                document.querySelector('.user-avatar').textContent = newName.trim().charAt(0).toUpperCase();
+                showToast("Name saved", "success");
+                closeProfileModal();
+                
+                greet('discover-greeting');
+                if(currentBotId) greet('chat-greeting');
+            } else {
+                showToast("Name cannot be empty", "error");
+            }
+        }
+
+        // Add Bot Logic
+        function openAddBotModal() {
+            document.getElementById('add-bot-id-input').value = '';
+            document.getElementById('add-bot-modal').classList.add('active');
+        }
+        
+        function closeAddBotModal() {
+            document.getElementById('add-bot-modal').classList.remove('active');
+        }
+        
+        async function addPrivateBot() {
+            const input = document.getElementById('add-bot-id-input');
+            const id = input.value.trim();
+            if(!id) {
+                showToast("Enter a Bot ID", "error");
+                return;
+            }
+            
+            try {
+                const res = await fetch(`/resolve_bot?query=${encodeURIComponent(id)}`);
+                if(!res.ok) throw new Error("Bot not found");
+                const data = await res.json();
+                
+                addToRecents({
+                    id: data.bot_id,
+                    name: data.name,
+                    avatar: data.avatar
+                });
+                
+                closeAddBotModal();
+                showToast("Bot added to Recents!", "success");
+                connectFromSidebar(data.bot_id, data.name, data.avatar);
+                
+            } catch(e) {
+                showToast("Bot not found", "error");
+            }
+        }
+
+        function renderMessageHTML(text, sender, link) {
+            const stream = document.getElementById('chat-stream');
+            const msg = document.createElement('div');
+            msg.className = `msg ${sender}`;
+            
+            if (sender === 'bot' && currentBotId === 'Agent') {
+                msg.classList.add('agent-msg');
+            }
+            
+            let avatarHtml = '';
+            if (sender === 'bot') {
+                let iconContent = '';
+                if (!currentBotId || currentBotId === 'Agent') {
+                    iconContent = `<img src="/static/icon.png" alt="A">`;
+                } else {
+                    iconContent = AVATARS[currentAvatar] || AVATARS['default'];
+                }
+                avatarHtml = `<div class="avatar bot"><div class="icon-bot">${iconContent}</div></div>`;
+            } else {
+                const initial = (localStorage.getItem('askew_username') || "User").charAt(0).toUpperCase();
+                avatarHtml = `<div class="avatar user">${initial}</div>`;
+            }
+            
+            let content = text;
+            if (link && link.title && link.url) {
+                content += `<br><a href="${link.url}" target="_blank" style="display:inline-block; margin-top:8px; color:var(--accent-lilac); text-decoration:underline;">${link.title} &rarr;</a>`;
+            }
+
+            msg.innerHTML = `
+                ${avatarHtml}
+                <div class="bubble">
+                    ${sender === 'bot' ? `<div class="msg-meta">${botDisplayName}</div>` : ''}
+                    ${content}
+                </div>
+            `;
+            stream.appendChild(msg);
+        }
+
+        function appendMessage(text, sender, link, save=true) {
+            renderMessageHTML(text, sender, link);
+            const stream = document.getElementById('chat-stream');
+            stream.scrollTop = stream.scrollHeight;
+            
+            // Reveal chat stream
+            document.getElementById('chat-greeting').style.display = 'none';
+            document.getElementById('continue-btn').style.display = 'none';
+            document.getElementById('chat-view').classList.remove('initial-view');
+            
+            if(save && currentBotId) {
+                saveChatHistory(currentBotId, { text, sender, link });
+            }
+        }
+
+        async function sendMessage() {
+            if (!currentBotId) {
+                showToast("Select a bot first", "error");
+                return;
+            }
+            
+            const input = document.querySelector('.input-box textarea');
+            const text = input.value.trim();
+            if (!text) return;
+
+            appendMessage(text.replace(/</g, "&lt;").replace(/>/g, "&gt;"), 'user');
+            input.value = '';
+            
+            if(isHandsFreeMode) updateVoiceUI('thinking');
+
+            try {
+                const res = await fetch(`/chat/${currentBotId}`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ message: text })
+                });
+                
+                if(res.status === 404) {
+                    appendMessage("Bot not found.", 'bot');
+                    if(isHandsFreeMode) speakText("Bot not found.");
+                } else {
+                    const data = await res.json();
+                    appendMessage(data.reply, 'bot', data.link);
+                    
+                    if (isHandsFreeMode) {
+                        const richDiv = document.getElementById('voice-rich-content');
+                        richDiv.style.display = 'flex';
+                        richDiv.innerHTML = data.reply; 
+                        
+                        if (data.link && data.link.url) {
+                            const btn = document.createElement('a');
+                            btn.href = data.link.url;
+                            btn.target = "_blank";
+                            btn.className = "voice-link-btn";
+                            btn.textContent = (data.link.title || "Open Link") + " \u2192";
+                            richDiv.appendChild(btn);
+                        }
+                        
+                        speakText(data.reply);
+                    } else if (isVoiceMode) {
+                        speakText(data.reply);
+                        isVoiceMode = false;
+                    }
+                    
+                     // Update Debug Info: Last Response Source
+                    if(document.getElementById('debug-menu').style.display === 'block') {
+                        fetchDebugInfo(); // Refresh status
+                        document.getElementById('dbg-last-resp').innerText = data.debug_source || "Standard Inference";
+                    }
+                }
+            } catch(e) {
+                appendMessage("Error sending message.", 'bot');
+                if(isHandsFreeMode) updateVoiceUI('listening');
+            }
+        }
+
+        // Voice UI
+        function toggleVoiceMode() {
+            const overlay = document.getElementById('voice-overlay');
+            if (overlay.classList.contains('active')) {
+                exitVoiceMode();
+            } else {
+                enterVoiceMode();
+            }
+        }
+
+        function enterVoiceMode() {
+            if (!currentBotId) { showToast("Select a bot first", "error"); return; }
+            if (!recognition) { showToast("Voice not supported", "error"); return; }
+            
+            isHandsFreeMode = true;
+            document.getElementById('voice-overlay').classList.add('active');
+            
+            // Clear previous rich content
+            const richDiv = document.getElementById('voice-rich-content');
+            richDiv.innerHTML = '';
+            richDiv.style.display = 'none';
+            
+            // Set initial listening state
+            updateVoiceUI('listening');
+            
+            toggleVoice(true);
+        }
+
+        function exitVoiceMode() {
+            isHandsFreeMode = false;
+            document.getElementById('voice-overlay').classList.remove('active');
+            if (isListening) recognition.stop();
+            if (synth.speaking) synth.cancel();
+        }
+
+        function updateVoiceUI(state) {
+            const orb = document.querySelector('.voice-orb');
+            const status = document.querySelector('.voice-status');
+            
+            orb.classList.remove('listening', 'thinking', 'speaking');
+            
+            if (state === 'listening') {
+                orb.classList.add('listening');
+                status.textContent = "Listening";
+            } else if (state === 'thinking') {
+                orb.classList.add('thinking');
+                status.textContent = "Thinking";
+            } else if (state === 'speaking') {
+                orb.classList.add('speaking');
+                status.textContent = "Speaking";
+            }
+        }
+
+        function toggleVoice(forceStart) {
+            if (!recognition) return;
+            if (synth.speaking) synth.cancel();
+            
+            if (isListening && !forceStart) {
+                recognition.stop();
+            } else {
+                try { recognition.start(); } catch(e) {}
+            }
+        }
+        
+        function speakText(text) {
+            if (!text) return;
+            if (isHandsFreeMode) updateVoiceUI('speaking');
+            
+            const plainText = text.replace(/<[^>]*>?/gm, '');
+            const utterance = new SpeechSynthesisUtterance(plainText);
+            
+            utterance.onend = function() {
+                if (isHandsFreeMode) {
+                    updateVoiceUI('listening');
+                    try { recognition.start(); } catch(e) {}
+                }
+            };
+            synth.speak(utterance);
+        }
+
+        // Utils
+        function showToast(msg, type) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast show ' + (type === 'error' ? 'toast-error' : 'toast-success');
+            setTimeout(() => t.className = 'toast', 3000);
+        }
+        
+        function copyShareLink() {
+            if(!currentBotId) {
+                showToast("Select a bot first", "error");
+                return;
+            }
+            navigator.clipboard.writeText(window.location.href);
+            showToast("Link copied!", "success");
+        }
+
+        document.querySelector('.input-box textarea').addEventListener('keypress', (e) => { 
+            if(e.key==='Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage(); 
+            }
+        });
+        
+        document.querySelector('.send-btn').addEventListener('click', sendMessage);
+    </script>
+</body>
+</html>
